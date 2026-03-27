@@ -1,0 +1,47 @@
+[package]
+name = "hwprofile"
+version = "0.1.0"
+edition = "2021"
+description = "Cross-platform hardware profiler"
+license = "MIT"
+repository = "https://github.com/your-username/hwprofile"
+keywords = ["hardware", "system", "profiler", "diagnostics"]
+categories = ["command-line-utilities", "os"]
+
+[[bin]]
+name = "hwprofile"
+path = "src/main.rs"
+
+[dependencies]
+# Cross-platform system info — CPU, RAM, disks, network, processes
+sysinfo = "0.32"
+
+# NVIDIA GPU queries via NVML — cross-platform
+nvml-wrapper = { version = "0.10", optional = true }
+
+# CLI
+clap = { version = "4", features = ["derive"] }
+
+# Serialization — enables --json flag
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Error handling
+thiserror = "1"
+anyhow = "1"
+
+# Timestamp formatting
+chrono = "0.4"
+
+[target.'cfg(windows)'.dependencies]
+# WMI — per-DIMM RAM detail, motherboard, BIOS, chassis
+wmi = "0.14"
+windows = { version = "0.58", features = [
+    "Win32_System_Com",
+    "Win32_System_Wmi",
+    "Win32_System_Power",
+]}
+
+[features]
+default = ["nvidia"]
+nvidia = ["dep:nvml-wrapper"]

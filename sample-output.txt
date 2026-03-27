@@ -1,0 +1,183 @@
+========================================================================
+  HARDWARE PROFILE REPORT
+  Generated : 2026-03-15 09:22:41
+  Machine   : DESKTOP-EXAMPLE
+========================================================================
+
+========================================================================
+  OPERATING SYSTEM
+========================================================================
+    OS                               : Windows 11 Pro
+    Kernel                           : 22631
+    Hostname                         : DESKTOP-EXAMPLE
+    Architecture                     : x86_64
+    Uptime                           : 1d 4h 37m
+
+========================================================================
+  MOTHERBOARD & BIOS
+========================================================================
+
+  Motherboard
+  --------------------------------------------------------
+      Manufacturer                   : MSI
+      Product                        : MAG X670E TOMAHAWK WIFI
+      Version                        : 1.0
+      Serial                         : [REDACTED]
+
+  BIOS
+  --------------------------------------------------------
+      Manufacturer                   : American Megatrends Inc.
+      Version                        : 7E12AMS
+      Release Date                   : 2023-09-06
+      Serial                         : [REDACTED]
+
+========================================================================
+  PROCESSOR (CPU)
+========================================================================
+    Name                             : AMD Ryzen 9 7950X 16-Core Processor
+    Physical Cores                   : 16
+    Logical Processors               : 32
+    Base Clock                       : 4.50 GHz (4500 MHz)
+    Load (current)                   : 8.2%
+
+========================================================================
+  MEMORY (RAM)
+========================================================================
+    Total                            : 64.00 GB
+    Used                             : 22.14 GB (34.6%)
+    Available                        : 41.86 GB
+
+  Stick 1 - BANK 0 / ChannelA-DIMM0
+  --------------------------------------------------------
+      Capacity                       : 32.00 GB
+      Type                           : DDR5
+      Speed                          : 6000 MHz
+      Configured Speed               : 6000 MHz
+      Manufacturer                   : G.Skill
+      Part Number                    : F5-6000J3038F32G
+      Serial Number                  : [REDACTED]
+      Form Factor                    : DIMM
+      Data Width                     : 64-bit
+
+  Stick 2 - BANK 1 / ChannelB-DIMM0
+  --------------------------------------------------------
+      Capacity                       : 32.00 GB
+      Type                           : DDR5
+      Speed                          : 6000 MHz
+      Configured Speed               : 6000 MHz
+      Manufacturer                   : G.Skill
+      Part Number                    : F5-6000J3038F32G
+      Serial Number                  : [REDACTED]
+      Form Factor                    : DIMM
+      Data Width                     : 64-bit
+
+========================================================================
+  GRAPHICS (GPU)
+========================================================================
+
+  NVIDIA GeForce RTX 4080
+  --------------------------------------------------------
+      VRAM Total                     : 16.00 GB
+      VRAM Used                      : 2.87 GB
+      VRAM Free                      : 13.13 GB
+      GPU Clock                      : 2505 MHz
+      Memory Clock                   : 1400 MHz
+      Temperature                    : 38 C
+      Fan Speed                      : 0%
+      Power Draw                     : 28.4 W
+      Power Limit                    : 320.0 W
+      GPU Utilization                : 1%
+      Memory Utilization             : 4%
+      PCIe Gen                       : 4
+      PCIe Width                     : x16
+      Driver Version                 : 551.61
+      CUDA Version                   : 12.4
+
+========================================================================
+  STORAGE
+========================================================================
+
+  Logical Volumes
+  --------------------------------------------------------
+     OS (C:\)                        : 931.51 GB total — 387.42 GB used (41.6%) — 544.09 GB free — NTFS SSD
+     Data (D:\)                      : 1.86 TB total — 891.33 GB used (46.8%) — 1.03 TB free — NTFS SSD
+
+  Physical Disk 0 - Samsung SSD 990 Pro 1TB
+  --------------------------------------------------------
+      Size                           : 1.00 TB
+      Interface                      : SCSI
+      Media Type                     : Fixed hard disk media
+      Firmware                       : 4B2QGXA7
+      Serial Number                  : [REDACTED]
+      Status                         : OK
+
+  Physical Disk 1 - WD_BLACK SN850X 2TB
+  --------------------------------------------------------
+      Size                           : 2.00 TB
+      Interface                      : SCSI
+      Media Type                     : Fixed hard disk media
+      Firmware                       : 620361WD
+      Serial Number                  : [REDACTED]
+      Status                         : OK
+
+========================================================================
+  NETWORK
+========================================================================
+
+  Ethernet
+  --------------------------------------------------------
+      MAC Address                    : [REDACTED]
+      Received                       : 84.21 GB
+      Transmitted                    : 12.47 GB
+
+  Wi-Fi
+  --------------------------------------------------------
+      MAC Address                    : [REDACTED]
+      Received                       : 0.00 KB
+      Transmitted                    : 0.00 KB
+
+========================================================================
+  TEMPERATURES
+========================================================================
+    Note                             : No temperature sensors found. On Windows, install and run Open Hardware Monitor as Administrator.
+
+========================================================================
+  RUNTIMES & TOOLS
+========================================================================
+    rustc                            : rustc 1.77.0 (aedd173a2 2024-03-17)
+    cargo                            : cargo 1.77.0 (1b724085a 2024-03-05)
+    dotnet                           : 8.0.201
+    node                             : v20.12.0
+    python                           : Python 3.12.2
+    git                              : git version 2.44.0.windows.1
+    docker                           : Docker version 25.0.4, build 1a576c5
+    ollama                           : not found
+    nvcc                             : nvcc: NVIDIA (R) Cuda compiler driver, V12.4.99
+    kubectl                          : Client Version: v1.29.3
+
+========================================================================
+  INSTALLED PROGRAMS
+========================================================================
+    7-Zip 24.01 (x64)                : 24.01.00.0
+    CMake 3.29.0                     : 3.29.0
+    Docker Desktop                   : 4.28.0
+    Git                              : 2.44.0
+    Google Chrome                    : 123.0.6312.58
+    Microsoft Edge                   : 123.0.2420.65
+    Microsoft Visual C++ 2015-2022 Redistributable (x64) : 14.38.33130.0
+    Microsoft Visual C++ 2015-2022 Redistributable (x86) : 14.38.33130.0
+    Microsoft Visual Studio Code     : 1.88.0
+    Node.js                          : 20.12.0
+    NVIDIA GeForce Experience        : 3.28.0.419
+    NVIDIA Graphics Driver 551.61    : 551.61
+    NVIDIA CUDA Toolkit 12.4         : 12.4.0
+    Python 3.12.2 (64-bit)           : 3.12.2150.0
+    Rust (MSVC 1.77.0)               : 1.77.0
+    Visual Studio 2022 Community     : 17.9.6
+    Windows Subsystem for Linux      : 2.2.1.0
+    Windows Terminal                 : 1.19.10573.0
+    WinRAR 7.00 (64-bit)             : 7.00.0
+
+========================================================================
+  END OF REPORT - 2026-03-15 09:22:41
+========================================================================

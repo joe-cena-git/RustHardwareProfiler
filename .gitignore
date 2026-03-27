@@ -1,0 +1,7 @@
+/target
+Cargo.lock
+
+# Never commit generated report files — they contain hardware serial numbers,
+# MAC addresses, and other identifying information.
+hwprofile_*.txt
+*.hwprofile.txt
