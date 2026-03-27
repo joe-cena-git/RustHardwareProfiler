@@ -1,11 +1,11 @@
-# hwprofile
+# RustHardwareProfiler
 
-A cross-platform hardware profiler. Produces a detailed, human-readable report
-of system hardware — CPU, RAM, GPU, storage, network, motherboard, BIOS,
-installed runtimes, and every installed program. Output goes to stdout and a
-timestamped file.
+A cross-platform hardware profiler written in Rust. Produces a detailed,
+human-readable report of system hardware — CPU, RAM, GPU, storage, network,
+motherboard, BIOS, installed runtimes, and every installed program. Output goes
+to stdout and a timestamped file.
 
-```
+```text
 ========================================================================
   HARDWARE PROFILE REPORT
   Generated : 2026-03-15 09:22:41
@@ -40,9 +40,10 @@ See [sample-output.txt](sample-output.txt) for full report output.
 ## Install
 
 **From source:**
+
 ```bash
-git clone https://github.com/your-username/hwprofile
-cd hwprofile
+git clone https://github.com/your-username/RustHardwareProfiler
+cd RustHardwareProfiler
 cargo build --release
 # Binary at target/release/hwprofile
 ```
@@ -57,7 +58,7 @@ extra install needed).
 
 ## Usage
 
-```
+```text
 hwprofile [OPTIONS]
 
 Options:
@@ -88,7 +89,7 @@ hwprofile --quiet
 ## Sections
 
 | Section | Source |
-|---|---|
+| --- | --- |
 | Operating System | sysinfo |
 | Motherboard & BIOS | WMI `Win32_BaseBoard` / `Win32_BIOS` (Windows), DMI sysfs (Linux) |
 | Processor (CPU) | sysinfo — two-sample delta for accurate load |
@@ -105,7 +106,7 @@ hwprofile --quiet
 ## Platform Support
 
 | Feature | Windows | Linux | macOS |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | OS info | ✅ | ✅ | ✅ |
 | CPU | ✅ | ✅ | ✅ |
 | RAM (total / used) | ✅ | ✅ | ✅ |

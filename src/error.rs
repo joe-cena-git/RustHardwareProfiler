@@ -4,8 +4,8 @@ pub enum ProfilerError {
     #[error("WMI query failed: {0}")]
     Wmi(String),
 
-    #[error("NVML error: {0}")]
-    Nvml(String),
+    #[error("GPU error: {0}")]
+    Gpu(String),
 
     #[error("sysinfo error: {0}")]
     SysInfo(String),
@@ -13,6 +13,7 @@ pub enum ProfilerError {
     #[error("I/O error: {0}")]
     Io(#[from] std::io::Error),
 
+    #[cfg(target_os = "linux")]
     #[error("platform not supported: {0}")]
     Unsupported(String),
 

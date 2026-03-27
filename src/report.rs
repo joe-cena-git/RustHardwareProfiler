@@ -37,11 +37,6 @@ impl Section {
         return self;
     }
 
-    pub fn subfield(mut self, label: impl Into<String>, value: impl Into<String>) -> Self {
-        self.fields.push(Field { label: label.into(), value: value.into(), indent: 1 });
-        return self;
-    }
-
     pub fn push_field(&mut self, label: impl Into<String>, value: impl Into<String>) {
         self.fields.push(Field { label: label.into(), value: value.into(), indent: 0 });
     }
@@ -56,15 +51,12 @@ impl Section {
 #[derive(Debug, Default)]
 pub struct Report {
     redact: bool,
-    /// Ordered sections — BTreeMap preserves insertion order via indexing.
     sections: Vec<(String, Vec<Section>)>,
-    /// Summary fields shown at the end of the plain-text report.
-    summary: Vec<Field>,
 }
 
 impl Report {
     pub fn new(redact: bool) -> Self {
-        return Self { redact, sections: Vec::new(), summary: Vec::new() };
+        return Self { redact, sections: Vec::new() };
     }
 
     pub fn add_sections(&mut self, title: &str, sections: Vec<Section>) {

@@ -43,18 +43,18 @@ fn collect_nvidia() -> Result<Vec<Section>, ProfilerError> {
     use nvml_wrapper::Nvml;
 
     let nvml: Nvml = Nvml::init()
-        .map_err(|e| ProfilerError::Nvml(e.to_string()))?;
+        .map_err(|e| ProfilerError::Gpu(e.to_string()))?;
 
     let device_count: u32 = nvml
         .device_count()
-        .map_err(|e| ProfilerError::Nvml(e.to_string()))?;
+        .map_err(|e| ProfilerError::Gpu(e.to_string()))?;
 
     let mut sections: Vec<Section> = Vec::new();
 
     for index in 0..device_count {
         let dev = nvml
             .device_by_index(index)
-            .map_err(|e| ProfilerError::Nvml(e.to_string()))?;
+            .map_err(|e| ProfilerError::Gpu(e.to_string()))?;
 
         let name: String = dev.name()
             .unwrap_or_else(|_| format!("GPU {index}"));
