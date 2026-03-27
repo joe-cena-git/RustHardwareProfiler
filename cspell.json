@@ -1,0 +1,27 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "BIOS",
+    "CUDA",
+    "DIMM",
+    "diskutil",
+    "dmidecode",
+    "dpkg",
+    "hwmon",
+    "hwprofile",
+    "lsblk",
+    "Megatrends",
+    "MSVC",
+    "NTFS",
+    "nvcc",
+    "NVML",
+    "ollama",
+    "pacman",
+    "Ryzen",
+    "rustc",
+    "sysfs",
+    "sysinfo",
+    "WMI"
+  ]
+}

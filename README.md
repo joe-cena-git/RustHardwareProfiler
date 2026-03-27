@@ -91,15 +91,15 @@ hwprofile --quiet
 | Section | Source |
 | --- | --- |
 | Operating System | sysinfo |
-| Motherboard & BIOS | WMI `Win32_BaseBoard` / `Win32_BIOS` (Windows), DMI sysfs (Linux) |
+| Motherboard & BIOS | WMI (Windows) · DMI sysfs (Linux) · `system_profiler` (macOS) |
 | Processor (CPU) | sysinfo — two-sample delta for accurate load |
-| Memory (RAM) | sysinfo (totals) + WMI `Win32_PhysicalMemory` / dmidecode (per-DIMM) |
-| Graphics (GPU) | NVML (NVIDIA, primary) → WMI `Win32_VideoController` fallback |
-| Storage | sysinfo (volumes) + WMI `Win32_DiskDrive` / lsblk (physical disks) |
+| Memory (RAM) | sysinfo (totals) · WMI / dmidecode / `system_profiler` (per-DIMM) |
+| Graphics (GPU) | NVML primary · WMI / sysfs / `system_profiler` fallback per platform |
+| Storage | sysinfo (volumes) · WMI / lsblk / `diskutil` (physical disks) |
 | Network | sysinfo |
 | Temperatures | sysinfo (Linux hwmon / OHM on Windows) |
 | Runtimes & Tools | subprocess version probes |
-| Installed Programs | Windows registry uninstall keys (all three hives) |
+| Installed Programs | registry (Windows) · dpkg/rpm/pacman (Linux) · `system_profiler` (macOS) |
 
 ---
 
@@ -110,15 +110,16 @@ hwprofile --quiet
 | OS info | ✅ | ✅ | ✅ |
 | CPU | ✅ | ✅ | ✅ |
 | RAM (total / used) | ✅ | ✅ | ✅ |
-| RAM (per-DIMM detail) | ✅ WMI | ✅ dmidecode | ⚠️ limited |
+| RAM (per-DIMM detail) | ✅ WMI | ✅ dmidecode | ✅ system_profiler |
 | GPU (NVIDIA) | ✅ NVML | ✅ NVML | ✅ NVML |
-| GPU (other) | ✅ WMI | ⚠️ sysfs | — |
-| Storage | ✅ | ✅ | ✅ |
+| GPU (other) | ✅ WMI | ✅ sysfs | ✅ system_profiler |
+| Storage (logical) | ✅ | ✅ | ✅ |
+| Storage (physical) | ✅ WMI | ✅ lsblk | ✅ diskutil |
 | Network | ✅ | ✅ | ✅ |
-| Motherboard / BIOS | ✅ WMI | ✅ DMI sysfs | — |
+| Motherboard / BIOS | ✅ WMI | ✅ DMI sysfs | ✅ system_profiler |
 | Temperatures | ✅ OHM | ✅ hwmon | ⚠️ limited |
 | Runtimes & Tools | ✅ | ✅ | ✅ |
-| Installed Programs | ✅ registry | — | — |
+| Installed Programs | ✅ registry | ✅ dpkg/rpm/pacman | ✅ system_profiler |
 
 ---
 

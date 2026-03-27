@@ -47,6 +47,9 @@ impl Collector for StorageCollector {
         #[cfg(target_os = "linux")]
         sections.extend(collect_physical_linux()?);
 
+        #[cfg(target_os = "macos")]
+        sections.extend(collect_physical_macos()?);
+
         return Ok(sections);
     }
 }
@@ -122,6 +125,97 @@ fn collect_physical_linux() -> Result<Vec<Section>, ProfilerError> {
 
             sections.push(s);
         }
+    }
+
+    return Ok(sections);
+}
+
+/// macOS: enumerate physical disks via diskutil list -plist and diskutil info.
+#[cfg(target_os = "macos")]
+fn collect_physical_macos() -> Result<Vec<Section>, ProfilerError> {
+    use std::process::Command;
+
+    let list_output = Command::new("diskutil")
+        .args(["list", "-plist", "physical"])
+        .output()
+        .map_err(|e| ProfilerError::Other(format!("diskutil unavailable: {e}")))?;
+
+    if !list_output.status.success() {
+        return Ok(Vec::new());
+    }
+
+    // Parse WholeDisks array from the plist.
+    let plist_text = String::from_utf8_lossy(&list_output.stdout);
+    let mut disk_names: Vec<String> = Vec::new();
+
+    let mut in_whole_disks = false;
+    for line in plist_text.lines() {
+        let line = line.trim();
+        if line.contains("WholeDisks") {
+            in_whole_disks = true;
+            continue;
+        }
+        if in_whole_disks {
+            if line == "</array>" { break; }
+            if line.starts_with("<string>") && line.ends_with("</string>") {
+                disk_names.push(line[8..line.len() - 9].to_string());
+            }
+        }
+    }
+
+    let mut sections: Vec<Section> = Vec::new();
+
+    for disk in disk_names {
+        let info_output = Command::new("diskutil")
+            .args(["info", "-plist", &format!("/dev/{disk}")])
+            .output();
+
+        let Ok(info) = info_output else { continue };
+        if !info.status.success() { continue; }
+
+        let info_text = String::from_utf8_lossy(&info.stdout);
+
+        let read_val = |key: &str| -> String {
+            let needle = format!("<key>{key}</key>");
+            if let Some(pos) = info_text.find(&needle) {
+                let rest = &info_text[pos + needle.len()..];
+                if let Some(s) = rest.find("<string>") {
+                    if let Some(e) = rest.find("</string>") {
+                        return rest[s + 8..e].trim().to_string();
+                    }
+                }
+                if let Some(s) = rest.find("<integer>") {
+                    if let Some(e) = rest.find("</integer>") {
+                        return rest[s + 9..e].trim().to_string();
+                    }
+                }
+            }
+            return String::new();
+        };
+
+        let media_name = read_val("MediaName");
+        let title = if media_name.is_empty() {
+            format!("/dev/{disk}")
+        } else {
+            format!("/dev/{disk} - {media_name}")
+        };
+
+        let mut s = Section::new(title);
+
+        let size_bytes: u64 = read_val("TotalSize").parse().unwrap_or(0);
+        if size_bytes > 0 {
+            s.push_subfield("Size", crate::report::fmt_bytes(size_bytes));
+        }
+        for (label, key) in &[
+            ("Protocol",     "BusProtocol"),
+            ("Solid State",  "SolidState"),
+            ("Smart Status", "SmartStatus"),
+        ] {
+            let v = read_val(key);
+            if !v.is_empty() { s.push_subfield(*label, v); }
+        }
+
+        sections.push(s);
     }
 
     return Ok(sections);

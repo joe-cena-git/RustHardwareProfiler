@@ -33,6 +33,9 @@ impl Collector for MemoryCollector {
         #[cfg(target_os = "linux")]
         sections.extend(collect_dimm_detail_linux()?);
 
+        #[cfg(target_os = "macos")]
+        sections.extend(collect_dimm_detail_macos()?);
+
         return Ok(sections);
     }
 }
@@ -143,6 +146,54 @@ fn collect_dimm_detail_linux() -> Result<Vec<Section>, ProfilerError> {
     }
 
     if let Some(s) = current { sections.push(s); }
+
+    return Ok(sections);
+}
+
+/// macOS: parse per-DIMM detail from system_profiler SPMemoryDataType.
+#[cfg(target_os = "macos")]
+fn collect_dimm_detail_macos() -> Result<Vec<Section>, ProfilerError> {
+    use std::process::Command;
+
+    let output = Command::new("system_profiler")
+        .args(["SPMemoryDataType", "-json"])
+        .output()
+        .map_err(|e| ProfilerError::Other(format!("system_profiler unavailable: {e}")))?;
+
+    if !output.status.success() {
+        return Err(ProfilerError::Other("system_profiler returned an error".to_string()));
+    }
+
+    let json: serde_json::Value = serde_json::from_slice(&output.stdout)
+        .map_err(|e| ProfilerError::Other(format!("JSON parse error: {e}")))?;
+
+    let items = match json["SPMemoryDataType"].as_array() {
+        Some(a) => a,
+        None => return Ok(Vec::new()),
+    };
+
+    let mut sections: Vec<Section> = Vec::new();
+
+    for (i, item) in items.iter().enumerate() {
+        let slot = item["_name"].as_str().unwrap_or(&format!("Slot {i}"));
+        let mut s = Section::new(slot);
+
+        for (label, key) in &[
+            ("Size",         "dimm_size"),
+            ("Type",         "dimm_type"),
+            ("Speed",        "dimm_speed"),
+            ("Manufacturer", "dimm_manufacturer"),
+            ("Part Number",  "dimm_part_number"),
+            ("Serial",       "dimm_serial_number"),
+            ("Status",       "dimm_status"),
+        ] {
+            if let Some(v) = item[key].as_str() {
+                s.push_subfield(*label, v);
+            }
+        }
+
+        sections.push(s);
+    }
 
     return Ok(sections);
 }

@@ -107,7 +107,7 @@
       Size                           : 1.00 TB
       Interface                      : SCSI
       Media Type                     : Fixed hard disk media
-      Firmware                       : 4B2QGXA7
+      Firmware                       : 1.0
       Serial Number                  : [REDACTED]
       Status                         : OK
 

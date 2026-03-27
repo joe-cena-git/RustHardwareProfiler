@@ -16,10 +16,13 @@ impl Collector for MotherboardCollector {
         #[cfg(target_os = "linux")]
         return collect_linux();
 
-        #[cfg(not(any(target_os = "windows", target_os = "linux")))]
+        #[cfg(target_os = "macos")]
+        return collect_macos();
+
+        #[cfg(not(any(target_os = "windows", target_os = "linux", target_os = "macos")))]
         return Ok(vec![Section::untitled().field(
             "Note",
-            "Motherboard detail not available on this platform.",
+            "Motherboard detail is not supported on this platform.",
         )]);
     }
 }
@@ -121,4 +124,43 @@ fn collect_linux() -> Result<Vec<Section>, ProfilerError> {
     bios.push_subfield("Release Date", read("bios_date"));
 
     return Ok(vec![board, bios]);
+}
+
+/// macOS: query hardware overview via system_profiler SPHardwareDataType.
+#[cfg(target_os = "macos")]
+fn collect_macos() -> Result<Vec<Section>, ProfilerError> {
+    use std::process::Command;
+
+    let output = Command::new("system_profiler")
+        .args(["SPHardwareDataType", "-json"])
+        .output()
+        .map_err(|e| ProfilerError::Other(format!("system_profiler unavailable: {e}")))?;
+
+    if !output.status.success() {
+        return Err(ProfilerError::Other("system_profiler returned an error".to_string()));
+    }
+
+    let json: serde_json::Value = serde_json::from_slice(&output.stdout)
+        .map_err(|e| ProfilerError::Other(format!("JSON parse error: {e}")))?;
+
+    let hw = json["SPHardwareDataType"]
+        .as_array()
+        .and_then(|a| a.first())
+        .ok_or_else(|| ProfilerError::Other("Unexpected system_profiler output".to_string()))?;
+
+    let mut s = Section::new("Hardware");
+    let fields = [
+        ("Model Name",       "machine_name"),
+        ("Model Identifier", "machine_model"),
+        ("Chip",             "chip_type"),
+        ("Serial Number",    "serial_number"),
+        ("Hardware UUID",    "platform_UUID"),
+    ];
+    for (label, key) in &fields {
+        if let Some(v) = hw[key].as_str() {
+            s.push_subfield(*label, v);
+        }
+    }
+
+    return Ok(vec![s]);
 }

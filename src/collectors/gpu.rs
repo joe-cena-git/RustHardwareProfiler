@@ -27,6 +27,11 @@ impl Collector for GpuCollector {
             sections.extend(collect_sysfs_gpus()?);
         }
 
+        #[cfg(target_os = "macos")]
+        if sections.is_empty() {
+            sections.extend(collect_macos_gpus()?);
+        }
+
         if sections.is_empty() {
             let mut s: Section = Section::untitled();
             s.push_field("Note", "No GPU info available. NVML / platform APIs returned no results.".to_string());
@@ -199,6 +204,52 @@ fn collect_sysfs_gpus() -> Result<Vec<Section>, ProfilerError> {
         let mut s: Section = Section::new(name);
         s.push_subfield("Vendor ID", vendor);
         s.push_subfield("Device ID", device);
+
+        sections.push(s);
+    }
+
+    return Ok(sections);
+}
+
+/// macOS fallback: query GPUs via system_profiler SPDisplaysDataType.
+#[cfg(target_os = "macos")]
+fn collect_macos_gpus() -> Result<Vec<Section>, ProfilerError> {
+    use std::process::Command;
+
+    let output = Command::new("system_profiler")
+        .args(["SPDisplaysDataType", "-json"])
+        .output()
+        .map_err(|e| ProfilerError::Other(format!("system_profiler unavailable: {e}")))?;
+
+    if !output.status.success() {
+        return Ok(Vec::new());
+    }
+
+    let json: serde_json::Value = serde_json::from_slice(&output.stdout)
+        .map_err(|e| ProfilerError::Other(format!("JSON parse error: {e}")))?;
+
+    let displays = match json["SPDisplaysDataType"].as_array() {
+        Some(a) => a,
+        None => return Ok(Vec::new()),
+    };
+
+    let mut sections: Vec<Section> = Vec::new();
+
+    for gpu in displays {
+        let name = gpu["_name"].as_str().unwrap_or("Unknown GPU").to_string();
+        let mut s = Section::new(name);
+
+        for (label, key) in &[
+            ("Vendor",    "sppci_vendor"),
+            ("Device ID", "sppci_device_type"),
+            ("VRAM",      "sppci_vram"),
+            ("Metal",     "sppci_metal"),
+            ("Bus",       "sppci_bus"),
+        ] {
+            if let Some(v) = gpu[key].as_str() {
+                s.push_subfield(*label, v);
+            }
+        }
 
         sections.push(s);
     }
